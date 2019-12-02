@@ -25,3 +25,12 @@ Calculation results (data.frame containing id_cols and value_cols)
 \description{
 Calculate a measures aggregation formula on a dataset
 }
+\examples{
+\dontrun{
+d <- data.frame(id = c("i1", "i1", "i2", "i3"), y = c(10, 20, 10, 10), a = c(4,2,3, 1), r = c(4,5,6,7))
+calculate_formula(d, f = "log(i1)+i2+i3", id_cols = ~y, value_cols = c("a", "r"), na.rm = TRUE)
+
+d <- data.frame(id = c("i1", "i2", "i3"), a = c(4, 3, 1), r = c(4, 6,7))
+calculate_formula(d, f = "i1+i2+ifelse(i3==1,0,-1)", value_cols = c("a", "r"))
+}
+}

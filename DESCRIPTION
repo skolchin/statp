@@ -11,4 +11,6 @@ LazyData: true
 Imports:
   dplyr,
   tidyr,
-  rlang
+  rlang,
+  mgcv
+RoxygenNote: 7.0.1
