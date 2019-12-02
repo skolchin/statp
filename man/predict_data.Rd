@@ -27,14 +27,14 @@ predict_data(
 
 \item{mark}{If TRUE, a 'forecast' variable will be added to result}
 
-\item{vars}{Names of interval and observation variable (1st and 2nd columns by default)}
+\item{vars}{Names of interval and observation variable (1st and 2nd numeric columns by default)}
 }
 \value{
 Approximation results (data.frame)
 }
 \description{
-This function builds an approximation model on data containing some observation interval and then
-use this model to appoximate another observation interval
+This function builds an approximation model on data containing some observation interval
+and then use this model to appoximate another observation interval.
 }
 \examples{
 \dontrun{
@@ -44,4 +44,5 @@ predict_data(.data = data.frame(
              .interval = seq(from = 2015, to = 2020, by = 1),
              method = "gam")
 }
+
 }
