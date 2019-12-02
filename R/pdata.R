@@ -11,8 +11,8 @@ library(stats)
 
 #' Data approximation
 #'
-#' This function builds an approximation model on data containing some observation interval and then
-#' use this model to appoximate another observation interval
+#' This function builds an approximation model on data containing some observation interval
+#' and then use this model to appoximate another observation interval.
 #'
 #' @param .data Source data (data.frame). Must contain interval and observation variables (for example, year and value)
 #' @param .interval Target interval variable (vector)
@@ -32,6 +32,8 @@ library(stats)
 #'              .interval = seq(from = 2015, to = 2020, by = 1),
 #'              method = "gam")
 #' }
+#'
+#' @name predict_data
 #' @export
 predict_data <- function(.data,
                          .interval,
@@ -115,5 +117,3 @@ predict_data <- function(.data,
   }
   return(ret_data)
 }
-
-

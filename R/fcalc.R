@@ -2,20 +2,31 @@
 ##' Statistical data analysis support functions
 ##' Sergey "kol" Kolchin, 2019
 ##'
-##' calculate_formula function
+##' agregate_data function definition
 ##'
 library(dplyr)
 library(tidyr)
 library(rlang)
 
-#' Calculate a measures aggregation formula on a dataset
+#' Measure aggregation by formula
 #'
+#' Performs a measures aggregation by formula on a dataset
 #'
-#' @param .data Dataset (data.frame), id column requred
+#' The function transforms a dataset so measure IDs become dataframe columns and then
+#' applies a formula to calculate aggregated measures.
+#'
+#' A formula can be a mesaure ID or any single-parameter function with
+#' aggregation operators (+. -, etc). See examples below.
+#'
+#' If a dataset contain additional identification variables, id_cols should be provided.
+#'
+#' A value_cols parameter specifies which variables are to be aggregated. If omitted,
+#' any numeric or logical columns are taken.
+#'
+#' @param .data Dataset (data.frame), 'id' column is required.
 #' @param f A formula
 #' @param id_cols Identification columns except id (string vector or R formula, like ~y)
-#' @param value_cols Calculation columns (string vector or R formula, like ~y).
-#' If missing, all numeric columns not including id_cols are processed
+#' @param value_cols Calculation columns (string vector or R formula, like ~y)
 #' @param na.rm TRUE to replace all NAs to zero
 #'
 #' @return Calculation results (data.frame containing id_cols and value_cols)
@@ -23,14 +34,17 @@ library(rlang)
 #'
 #' @examples
 #' \dontrun{
+#'
 #' d <- data.frame(id = c("i1", "i1", "i2", "i3"), y = c(10, 20, 10, 10), a = c(4,2,3, 1), r = c(4,5,6,7))
-#' calculate_formula(d, f = "log(i1)+i2+i3", id_cols = ~y, value_cols = c("a", "r"), na.rm = TRUE)
+#' agregate_data(d, f = "log(i1)+i2+i3", id_cols = ~y, value_cols = c("a", "r"), na.rm = TRUE)
 #'
 #' d <- data.frame(id = c("i1", "i2", "i3"), a = c(4, 3, 1), r = c(4, 6,7))
-#' calculate_formula(d, f = "i1+i2+ifelse(i3==1,0,-1)", value_cols = c("a", "r"))
+#' agregate_data(d, f = "i1+i2+ifelse(i3==1,0,-1)", value_cols = c("a", "r"))
 #' }
+#'
+#' @name agregate_data
 #' @export
-calculate_formula <- function(.data, f, id_cols = NULL, value_cols = NULL, na.rm = FALSE) {
+agregate_data <- function(.data, f, id_cols = NULL, value_cols = NULL, na.rm = FALSE) {
   # Checks
   stopifnot(!missing(.data))
   stopifnot("data.frame" %in% class(.data))
