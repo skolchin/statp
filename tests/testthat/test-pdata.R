@@ -7,5 +7,6 @@ test_that("predict_data", {
   for (m in c("lm", "glm", "gam")) {
     dp <- predict_data(.data = d, .interval = i, method = m)
     expect_equal(nrow(dp), length(i) + nrow(d))
+    expect_length(setdiff(names(d), names(dp)), 0)
   }
 })
