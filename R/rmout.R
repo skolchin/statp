@@ -16,8 +16,7 @@
 #'             If omitted, all numeric columns are processed. If a single variable is provided
 #'             and approx is TRUE, outlier values are removed from dataset. If it is a vector,
 #'             data is not removed but replaced with NAs.
-#' @param approx If TRUE, outliers are approximated, if FALSE (default) - removed or replaced by NAs.
-#'               Currently not supported, reserved for further use
+#' @param approx If TRUE, outliers are approximated using gam() function, if FALSE (default) - removed or replaced by NAs.
 #'
 #' @return resulting data.frame or a vector if source dataset contain only one column
 #'
@@ -52,8 +51,12 @@ remove_outliers <- function(.data, vars = NULL, approx = FALSE) {
       stop(paste0("Variables missing from source data: ", setdiff(vars, names(.data))))
   }
 
+  # Check data is sufficient for approximation
+  if (approx && nrow(.data) < 3)
+    stop("Insufficient number of observations in source data")
+
   ds <- NULL
-  if (length(vars) == 1) {
+  if (length(vars) == 1 && !approx) {
     # Simple case - remove outliers of one variable
     out <- grDevices::boxplot.stats(.data[[vars[1]]])$out
     ds <- .data[ which(!(.data[[vars[1]]] %in% out)), ]
@@ -61,12 +64,40 @@ remove_outliers <- function(.data, vars = NULL, approx = FALSE) {
   else {
     ds <- as.data.frame(
       sapply(vars, function(v) {
+        # Prepare the data
         d <- .data[[v]]
         out <- grDevices::boxplot.stats(d)$out
-        d[ which(.data[[v]] %in% out) ] <- NA
-        d
+
+        if (!approx) {
+          d[ which(.data[[v]] %in% out) ] <- NA
+          d
+        }
+        else {
+          # build a dataset with outliers removed
+          y <- .data[ which(!(.data[[v]] %in% out)), v]
+          if (length(y) < 3)
+            stop(paste0("Insufficient number of non-outlied observations of variable '",
+                        v, "'"))
+          x <- seq_along(.data[[v]])
+          x <- x[ which(!(.data[[v]] %in% out)) ]
+
+          # Do an approximation
+          nx <- seq_along(.data[[v]])
+          nd <- predict_data(.data = data.frame(x = x, y = y),
+                             .interval = nx, bs = "tp", k = 3,
+                             method = "gam",
+                             merge = FALSE,
+                             vars = c("x", "y"))
+
+          # Merge data
+          d[ which(.data[[v]] %in% out) ] <- nd[ which(.data[[v]] %in% out), "y" ]
+          d
+        }
       }))
+
+    names(ds) <- vars
     ds <- cbind(.data[setdiff(names(.data), vars)], ds)
+    ds <- ds[names(.data)]
   }
   return(ds)
 }
