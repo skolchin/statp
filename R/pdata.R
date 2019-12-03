@@ -37,7 +37,7 @@ library(stats)
 #' @export
 predict_data <- function(.data,
                          .interval,
-                         method = "loess",
+                         method = "lm",
                          ...,
                          merge = TRUE,
                          mark = FALSE,
@@ -108,10 +108,16 @@ predict_data <- function(.data,
   }
 
   if (merge) {
+    # get missing data
     miss_data <- .data[ !(.data[[ vars[1] ]] %in% ret_data[[ vars[1] ]]), ]
     if (mark) {
       miss_data <- cbind(miss_data, data.frame(forecast = rep(FALSE, nrow(miss_data))))
     }
+
+    # add columns missing from ret_data
+    sapply(setdiff(names(miss_data), names(ret_data)), function(v) ret_data[v] <<- NA  )
+
+    # merge and sort
     ret_data <- rbind(ret_data, miss_data)
     ret_data <- ret_data[ order(ret_data[,1]), ]
   }
