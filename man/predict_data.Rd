@@ -7,7 +7,7 @@
 predict_data(
   .data,
   .interval,
-  method = "loess",
+  method = "lm",
   ...,
   merge = TRUE,
   mark = FALSE,

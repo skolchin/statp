@@ -15,8 +15,7 @@ If omitted, all numeric columns are processed. If a single variable is provided
 and approx is TRUE, outlier values are removed from dataset. If it is a vector,
 data is not removed but replaced with NAs.}
 
-\item{approx}{If TRUE, outliers are approximated, if FALSE (default) - removed or replaced by NAs.
-Currently not supported, reserved for further use}
+\item{approx}{If TRUE, outliers are approximated using gam() function, if FALSE (default) - removed or replaced by NAs.}
 }
 \value{
 resulting data.frame or a vector if source dataset contain only one column
