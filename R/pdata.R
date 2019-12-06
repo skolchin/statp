@@ -76,6 +76,7 @@ predict_data <- function(.data,
   }
   else if (method == "gam") {
     # For GAM parameters are passed through the formula, not as extra parameters
+    requireNamespace("mgcv")
     bs <- "tp"
     k = min(10, nrow(.data))
 
@@ -85,7 +86,7 @@ predict_data <- function(.data,
 
     mf2 <- call("gam")
     mf2[[2L]] <- stats::as.formula(paste0(vars[2], " ~ s(", vars[1], ", bs = '", bs, "', k = ", k, ")"))
-    n <- length(mf2)+1
+    n <- length(mf2) + 1
     mf2[[n]] <- .data
     names(mf2)[n] <- "data"
 
@@ -102,24 +103,26 @@ predict_data <- function(.data,
   ret_data <- data.frame(.interval, stats::predict(m, newdata = param_data))
   names(ret_data) <- vars[1:2]
 
-  # Make up the result
-  if (mark) {
+  # Mark forecasting
+  if (mark)
     ret_data <- cbind(ret_data, data.frame(forecast = rep(TRUE, nrow(ret_data))))
-  }
 
   if (merge) {
-    # get missing data
-    miss_data <- .data[ !(.data[[ vars[1] ]] %in% ret_data[[ vars[1] ]]), ]
-    if (mark) {
-      miss_data <- cbind(miss_data, data.frame(forecast = rep(FALSE, nrow(miss_data))))
-    }
+    # filter out data which exists in source
+    new_data <- ret_data[ !(ret_data[[ vars[1] ]] %in% .data[[ vars[1] ]]), ]
+
+    if (mark)
+      old_data <- cbind(.data, data.frame(forecast = rep(FALSE, nrow(.data))))
+    else
+      old_data <- .data
 
     # add columns missing from ret_data
-    sapply(setdiff(names(miss_data), names(ret_data)), function(v) ret_data[v] <<- NA  )
+    sapply(setdiff(names(old_data), names(new_data)), function(v) new_data[v] <<- NA  )
 
     # merge and sort
-    ret_data <- rbind(ret_data, miss_data)
+    ret_data <- rbind(new_data, old_data)
     ret_data <- ret_data[ order(ret_data[,1]), ]
   }
   return(ret_data)
 }
+
