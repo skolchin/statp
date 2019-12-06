@@ -2,9 +2,10 @@
 % Please edit documentation in R/fcalc.R
 \name{agregate_data}
 \alias{agregate_data}
+\alias{aggregate_data}
 \title{Measure aggregation by formula}
 \usage{
-agregate_data(.data, f, id_cols = NULL, value_cols = NULL, na.rm = FALSE)
+aggregate_data(.data, f, id_cols = NULL, value_cols = NULL, na.rm = FALSE)
 }
 \arguments{
 \item{.data}{Dataset (data.frame), 'id' column is required.}

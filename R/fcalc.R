@@ -44,7 +44,7 @@ library(rlang)
 #'
 #' @name agregate_data
 #' @export
-agregate_data <- function(.data, f, id_cols = NULL, value_cols = NULL, na.rm = FALSE) {
+aggregate_data <- function(.data, f, id_cols = NULL, value_cols = NULL, na.rm = FALSE) {
   # Checks
   stopifnot(!missing(.data))
   stopifnot("data.frame" %in% class(.data))
