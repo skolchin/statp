@@ -2,7 +2,7 @@
 ##' Statistical data analysis support functions
 ##' Sergey "kol" Kolchin, 2019
 ##'
-##' agregate_data function definition
+##' aggregate_data function definition
 ##'
 library(dplyr)
 library(tidyr)
@@ -36,13 +36,13 @@ library(rlang)
 #' \dontrun{
 #'
 #' d <- data.frame(id = c("i1", "i1", "i2", "i3"), y = c(10, 20, 10, 10), a = c(4,2,3, 1), r = c(4,5,6,7))
-#' agregate_data(d, f = "log(i1)+i2+i3", id_cols = ~y, value_cols = c("a", "r"), na.rm = TRUE)
+#' aggregate_data(d, f = "log(i1)+i2+i3", id_cols = ~y, value_cols = c("a", "r"), na.rm = TRUE)
 #'
 #' d <- data.frame(id = c("i1", "i2", "i3"), a = c(4, 3, 1), r = c(4, 6,7))
-#' agregate_data(d, f = "i1+i2+ifelse(i3==1,0,-1)", value_cols = c("a", "r"))
+#' aggregate_data(d, f = "i1+i2+ifelse(i3==1,0,-1)", value_cols = c("a", "r"))
 #' }
 #'
-#' @name agregate_data
+#' @name aggregate_data
 #' @export
 aggregate_data <- function(.data, f, id_cols = NULL, value_cols = NULL, na.rm = FALSE) {
   # Checks
