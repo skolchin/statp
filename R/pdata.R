@@ -81,8 +81,8 @@ predict_data <- function(.data,
     k = min(10, nrow(.data))
 
     mf <- match.call(expand.dots = TRUE)
-    if ("bs" %in% names(mf)) bs <- mf$bs
-    if ("k" %in% names(mf)) k <- mf$k
+    if ("bs" %in% names(mf)) bs <- eval(mf$bs)
+    if ("k" %in% names(mf)) k <- eval(mf$k)
 
     mf2 <- call("gam")
     mf2[[2L]] <- stats::as.formula(paste0(vars[2], " ~ s(", vars[1], ", bs = '", bs, "', k = ", k, ")"))
